@@ -177,6 +177,7 @@ function puntoGPS(xparam, yparam){
 	posActual[0] = x;
 	posActual[1] = y;
 	
+	buscarParadaCercana();
 	$('#divLatLon').html(yparam.toFixed(4)+', '+xparam.toFixed(4));
 	
 	if (featurePosActual == null){
