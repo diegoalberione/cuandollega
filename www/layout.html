@@ -96,38 +96,7 @@
                 </div>       
             </div>         
         </nav>
-		<div style="margin-top:60px; padding:10px;">
-			<div class="row">
-				<div class="col-xs-5">Ubicación</div>
-				<div class="col-xs-7" id="divLatLon"></div>
-			</div>
-			<div class="row">
-				<div class="col-xs-5">Parada cercana <i id="divParadaActualizar"></i><input type="hidden" id="inputParadaId"></div>
-				<div class="col-xs-7" id="divParada"></div>
-			</div>
-			<div class="panel panel-default" style="margin-top:10px;">
-				<div class="panel-heading" onclick="$('#divBusqueda').toggle(500);">Búsqueda</div>
-				<div class="panel-body" id="divBusqueda">
-					<div class="form-group">
-						<label>Calle</label><br>
-						<select class="combobox-autocomplete-calle" style="width:300px" id="busquedaCalle" name="busquedaCalle" onchange="">
-						</select>
-					</div>
-					<div class="form-group">
-						<label>Intersección</label><br>
-						<select class="combobox-autocomplete-calleint" style="width:300px" id="busquedaCalleInt" name="busquedaCalleInt" onchange="">
-						</select>
-					</div>
-					<div class="form-group">
-						<div class="col-sm-offset-2 col-sm-10">
-							<button type="button" class="btn btn-default" onclick="buscarParada()">Buscar</button>
-						</div>
-					</div>
-					<div id="divBusquedaResultado">
-					</div>
-				</div>
-			</div>
-
+		<div style="margin-top:60px; padding:10px;" id="divContenido">
 		</div>
 	</div>
 	<script type="text/javascript" src="cordova.js"></script>	  
@@ -152,51 +121,8 @@
 		var jAlertSugerencias;
 		app.initialize();
 		(function($) {
-			$(document).ready(function() {
-			
-				/**/
-				$(".combobox-autocomplete-calle").select2({
-					ajax: {
-						url: urlHost+"/ws/calles/json_combo",
-						dataType: 'json',
-						delay: 250,
-						data: function (params) {
-							return {
-								q: params.term, // search term
-								page: params.page
-							};
-						},
-						processResults: function (data, page) {
-							$('#busquedaCalle').text('');
-							return {
-								results: data.items
-							};
-						},
-						cache: true
-					},
-					minimumInputLength: 1,
-				});
-				$(".combobox-autocomplete-calleint").select2({
-					ajax: {
-						url: urlHost+"/ws/calles/json_combo",
-						dataType: 'json',
-						delay: 250,
-						data: function (params) {
-							return {
-								q: params.term, // search term
-								page: params.page
-							};
-						},
-						processResults: function (data, page) {
-							$('#busquedaCalleInt').text('');
-							return {
-								results: data.items
-							};
-						},
-						cache: true
-					},
-					minimumInputLength: 1,
-				});
+			$(document).ready(function() {				
+				$("#divContenido").load('./principal.html');
 				
 				verifConexion = setInterval(function() {
 					verificiarConexion();	

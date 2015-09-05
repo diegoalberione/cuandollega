@@ -1,0 +1,69 @@
+<div class="panel panel-default">
+	<div class="panel-heading">
+		Búsqueda por calle
+	</div>
+	<div class="panel-body" id="divBusqueda">
+		<div class="form-group">
+			<label>Calle</label><br>
+			<select class="combobox-autocomplete-calle" style="width:300px" id="busquedaCalle" name="busquedaCalle" onchange="">
+			</select>
+		</div>
+		<div class="form-group">
+			<label>Intersección</label><br>
+			<select class="combobox-autocomplete-calleint" style="width:300px" id="busquedaCalleInt" name="busquedaCalleInt" onchange="">
+			</select>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<button type="button" class="btn btn-default" onclick="buscarParada()">Buscar</button>
+			</div>
+		</div>
+		<div id="divBusquedaResultado">
+		</div>
+	</div>
+</div>
+<script>
+/**/
+$(".combobox-autocomplete-calle").select2({
+	ajax: {
+		url: urlHost+"/ws/calles/json_combo",
+		dataType: 'json',
+		delay: 250,
+		data: function (params) {
+			return {
+				q: params.term, // search term
+				page: params.page
+			};
+		},
+		processResults: function (data, page) {
+			$('#busquedaCalle').text('');
+			return {
+				results: data.items
+			};
+		},
+		cache: true
+	},
+	minimumInputLength: 1,
+});
+$(".combobox-autocomplete-calleint").select2({
+	ajax: {
+		url: urlHost+"/ws/calles/json_combo",
+		dataType: 'json',
+		delay: 250,
+		data: function (params) {
+			return {
+				q: params.term, // search term
+				page: params.page
+			};
+		},
+		processResults: function (data, page) {
+			$('#busquedaCalleInt').text('');
+			return {
+				results: data.items
+			};
+		},
+		cache: true
+	},
+	minimumInputLength: 1,
+});
+</script>
