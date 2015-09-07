@@ -112,6 +112,8 @@
     <script type="text/javascript" src="js/combobox/js/select2.min.js"></script>        
 
     <script type="text/javascript">
+		var parada = null; // id de la parada activa
+		
 		var snapper = new Snap({
 			element: document.getElementById('contenido'),
 			dragger: document.getElementById('do-drag'),
@@ -191,8 +193,18 @@
 			param += '&codcalleint='+$('#busquedaCalleInt').val();
 			
 			$.getJSON( urlHost+"/ws/transporteurbano/paradacercana?"+param, function( data ) {
-				var html = obtenerDatosMostrarParada(data[0][0]);
-				$('#divBusquedaResultado').html(html);
+				cuandollega(data[0][0]);
+			});
+		}
+		
+		function cuandollega(parada){		
+			$('#divParadaActualizar').html('<br>Buscando...');
+			
+			var datosparada = obtenerDatosMostrarParada(parada);
+			var url = urlHost+"/ws/transporteurbano/cuandollega/"+parada.id+'/'+parada.linea;
+			
+			$.getJSON( url, function( data ) {
+				$('#divBusquedaResultado').html(datosparada+'<br>Distancia de la unidad: '+data[0].costototal+'<br>'+data[0].geom);
 			});
 		}
 		
@@ -209,8 +221,10 @@
 			/**/
 		}
 		
-		function obtenerDatosMostrarParada(parada){
+		function obtenerDatosMostrarParada(paradaParam){
 			var html = '';
+			
+			parada = paradaParam;
 			
 			if (parada.distancia >= 1000){
 				html = 'a '+(parada.distancia / 1000).toFixed(2)+' km.';
@@ -219,18 +233,23 @@
 			}
 			
 			if (parada.lineauno == true){
+				parada.linea = 1;
 				html += '<br>Linea 1';
 			}
 			if (parada.lineados == true){
+				parada.linea = 2;
 				html += '<br>Linea 2';
 			}
 			if (parada.lineatres == true){
+				parada.linea = 3;
 				html += '<br>Linea 3';
 			}
 			if (parada.lineacuatro == true){
+				parada.linea = 4;
 				html += '<br>Linea 4';
 			}
 			if (parada.lineacinco == true){
+				parada.linea = 5;
 				html += '<br>Linea 5';
 			}
 			html += '<br>#'+parada.numero;
