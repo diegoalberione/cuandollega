@@ -1,108 +1,196 @@
-<style>
-	/* rb = resultado busqueda */
-	.rb_contenedor_icono{
-		float: left; 
-		position: absolute; 
-		margin-top: 12px;
-		vertical-align: middle;
-	}
-	
-	.rb_contenedor_icono img{
-		max-height: 32px;
-	}
-	
-	.rb_contenedor_info{
-		border-bottom: 1px solid #E0E0E0;
-		margin-left: 40px;
-		padding: 10px 0px;
-	}
-	
-	.rb_contenedor_info span{
-		cursor: pointer;
-		color: #626262;
-	}
-	
-</style>
-<html>
-    <div id="divResultadoBusqueda"></div>
-    
-    <script type="text/javascript">
-	var cerrarMensajeResultado;
-    $('#divResultadoBusqueda').html('<div class="alert alert-info" role="alert">Buscando...</div>');
-    if (($('#inputBusqueda').val().length > 2) || ($('#selectRubrosBusqueda').val() != -1)){
-		var urlHost = '';
-        var condicion = " nombre iLIKE '%"+$('#inputBusqueda').val()+"%' ";
-		var pos4326 = ol.proj.transform([posActual[0], posActual[1]],'EPSG:3857','EPSG:4326');	
-		var geomActual = pos4326[0]+","+pos4326[1];
-		if ($('#selectRubrosBusqueda').val() != -1){
-			condicion += " AND lugaresoficiales_rubro_id = "+$('#selectRubrosBusqueda').val();
-		}
-		
-        $.getJSON( urlHost+"/ws/entidades/listar/4",{busqueda:condicion, posactual:geomActual}, function( data ) {
-			
-			$("#cargando").hide();
-		
-            var items = [];
-            $.each( data.features, function( key, val ) {
-                var feature = data.features[key];
-                var coord = ol.proj.transform(feature.geometry.coordinates,'EPSG:4326','EPSG:3857');
-                var html = "<div onclick='snapper.close(\"left\");  ubicarEnMapa("+coord[0]+","+coord[1]+")'>";
-                html += '<div class="rb_contenedor_icono"><img src="'+urlHost+'/files/icons_layers/lugaresoficiales_rubro_'+feature.properties.rubro_id+'.png'+'"></im></div>';                                                    
-                html += '<div class="rb_contenedor_info">';
-				html += '<span><b>'+feature.properties.nombre+'</b></span><br>';
-				html += '<span>'+feature.properties.rubro+'</span><br>';
-				var distancia = feature.properties.distancia; 
-				distancia = Math.round(distancia * 100) / 100;
-				if (distancia > 1000) {
-					distancia = (Math.round(distancia / 1000 * 100) / 100) +
-					' ' + 'km';
-				} else {
-					distancia = (Math.round(distancia * 100) / 100) +
-					' ' + 'm';
-				}
-				html += '<span style="font-size: 11px;"><i>Distancia: '+distancia+'</i></span>';
-				html += '</div>';
-                html += "</div>";
-                items.push( html );
-            });
-            
-            if (items.length > 0){
-                var html = '<div><span class="menu_opciones" style="margin-top: 10px;"><b>Resultados: </b></span>';
-                html += items.join( "" );
-                html += '</div>';
-                $('#divResultadoBusqueda').html(html);
-            } else{
-                var html = '<div class="alert alert-warning" role="alert">';
-                //html += '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true" style="font-size: 28px">&times;</span></button>';
-                html += 'No se han encontrado resultados.';
-                html += '</div>';
-                $('#divResultadoBusqueda').html(html);
-				/**
-				cerrarMensajeResultado = setInterval(function() {
-					$('#divResultadoBusqueda').hide(500, function(){
-						$('#divResultadoBusqueda').html("");
-						$('#divResultadoBusqueda').show();
-					});
-					clearInterval(cerrarMensajeResultado);
-				}, 3000);
-				/**/
-            }
-    
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-			$('#divResultadoBusqueda').html('<div class="alert alert-danger" role="alert">Error de conexión.</div>');
-		});
-    } else{
-        $('#divResultadoBusqueda').html('<div class="alert alert-danger" role="alert">Seleccione un rubro o ingrese 3 o más caracteres.</div>');
-		/**
-		cerrarMensajeResultado = setInterval(function() {
-			$('#divResultadoBusqueda').hide(500, function(){
-				$('#divResultadoBusqueda').html("");
-				$('#divResultadoBusqueda').show();
-			});
-			clearInterval(cerrarMensajeResultado);
-		}, 3000);
-		/**/
-		$("#cargando").hide();
+
+<style>	
+    .ol-zoom{
+        display: block;
+		top: auto;
+		bottom: 10px;
+		left: 10px;
     }
-    </script>
-</html>
+	.ol-control button{
+		background-color: #69C3A0;
+		font-size: 20px;
+	}
+    .ol-attribution{
+        display: none;
+    }
+    .ol-rotate{
+        top: auto;
+        bottom: 170px;
+        right: 18px;
+        display: none;
+    }
+</style>
+
+<div class="panel panel-default" style="height: 150px;">
+	<div class="panel-body">
+		<div id="divResultado">Buscando parada...</div>
+	</div>
+</div>
+
+<div class="panel panel-default">
+	<div class="panel-body">
+		<div id="divMapa" style="width: 100%; height: 300px;"></div>
+	</div>
+</div>
+
+<script>
+$('#divResultado').html('Buscando paradas...');
+
+var param = '';
+if (typeof paradaBusqueda.codcalle != 'undefined') {
+	param = 'codcalle='+paradaBusqueda.codcalle;
+	param += '&codcalleint='+paradaBusqueda.codcalleint;
+	
+	$.getJSON( urlHost+"/ws/transporteurbano/paradacercana?"+param, function( data ) {
+		$('#divResultado').html('Buscando colectivo...');
+		paradaBusqueda = data[0][0];
+		var datosparada = obtenerDatosMostrarParada(paradaBusqueda);
+		var url = urlHost+"/ws/transporteurbano/cuandollega/"+paradaBusqueda.id+'/'+paradaBusqueda.linea;
+		
+		$.getJSON( url, function( data ) {
+			colectivoProximo = data[0];
+			$('#divResultado').html(datosparada+'<br>Colectivo próximo a: '+colectivoProximo.costototal+'<br>'+colectivoProximo.geom);
+			
+			inicializar();
+		});
+	});
+} else if (typeof paradaBusqueda.id != 'undefined') {
+	param = 'id='+paradaBusqueda.id;
+	param += '&xy='+ol.proj.transform(posActual,'EPSG:3857','EPSG:4326');
+	
+	$.getJSON( urlHost+"/ws/transporteurbano/getparada?"+param, function( data ) {
+		$('#divResultado').html('Buscando colectivo...');
+		paradaBusqueda = data[0][0];
+		var datosparada = obtenerDatosMostrarParada(paradaBusqueda);
+		var url = urlHost+"/ws/transporteurbano/cuandollega/"+paradaBusqueda.id+'/'+paradaBusqueda.linea;
+		
+		$.getJSON( url, function( data ) {
+			colectivoProximo = data[0];
+			$('#divResultado').html(datosparada+'<br>Colectivo próximo a: '+colectivoProximo.costototal+'<br>'+colectivoProximo.geom);
+			
+			inicializar();
+		});
+	});
+}
+
+/* prepara el mapa */
+var map;
+function inicializar(){
+	$('#divMapa').css("height", ($( window ).height() - 350));
+		
+	osm = new ol.layer.Tile({
+		id: 'base_'+1,
+		preload: Infinity,
+		name: 'osm',
+		type: 'base',
+		title: 'Open Street Map',
+		visible: true,
+		source: new ol.source.OSM()
+	});
+
+	var layersBases = [osm];
+	cantCapasBases = layersBases.length;
+	/* END crea los mapas bases */
+
+	view = new ol.View({
+		center: posActual,
+		zoom: 12
+	});
+
+	map = new ol.Map({
+		target: 'divMapa',		
+		layers: layersBases,
+		view: view
+	});
+	
+	var layer = new ol.layer.Tile({
+		type: 'overlay',
+		visible: true,
+		source: new ol.source.TileWMS({
+			url: 'http://200.58.108.122/cgi-bin/mapserv?map=/var/www/gis/files/maps/gisar_1.map',
+			gutter: 50,
+			params: { 'LAYERS': 'transportelinea'+paradaBusqueda.linea }
+		})
+	});
+	map.addLayer(layer);
+	
+	/**/
+	featurePosActual = new ol.Feature({
+		geometry: new ol.geom.Point(posActual),
+		nombre: 'Mi posición'
+	});
+
+	featuresOverlay = new ol.FeatureOverlay({
+		map: map,
+		features: [featurePosActual]
+	});
+	
+	var iconStyle = new ol.style.Style({
+		image: new ol.style.Icon(({
+			anchor: [15, 15],
+			anchorXUnits: 'pixels',
+			anchorYUnits: 'pixels',
+			opacity: 0.75,
+			src: 'iconos/miposicion.png'
+		}))
+	});
+	
+	featurePosActual.setStyle(iconStyle);
+	/**/
+	var format = new ol.format.WKT();
+	var feature = format.readFeature(paradaBusqueda.geom_wkt);
+	feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
+	
+	featureParada = new ol.Feature({
+		geometry: feature.getGeometry(),
+		nombre: 'Parada'
+	});
+
+	featuresOverlayParada = new ol.FeatureOverlay({
+		map: map,
+		features: [featureParada]
+	});
+	
+	var iconStyle = new ol.style.Style({
+		image: new ol.style.Icon(({
+			anchor: [16, 16],
+			anchorXUnits: 'pixels',
+			anchorYUnits: 'pixels',
+			opacity: 0.75,
+			src: 'iconos/parada.png'
+		}))
+	});
+	
+	featureParada.setStyle(iconStyle);
+	/**/
+	var format = new ol.format.WKT();
+	var feature = format.readFeature(colectivoProximo.geom);
+	feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
+	
+	featureColectivo = new ol.Feature({
+		geometry: feature.getGeometry(),
+		nombre: 'Colectivo'
+	});
+
+	featuresOverlayColectivo = new ol.FeatureOverlay({
+		map: map,
+		features: [featureColectivo]
+	});
+	
+	var iconStyle = new ol.style.Style({
+		image: new ol.style.Icon(({
+			anchor: [16, 16],
+			anchorXUnits: 'pixels',
+			anchorYUnits: 'pixels',
+			opacity: 0.75,
+			src: 'iconos/bus.png'
+		}))
+	});
+	
+	featureColectivo.setStyle(iconStyle);
+	/**/
+}
+/**/
+
+
+</script>

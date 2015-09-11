@@ -6,13 +6,13 @@
     <title>Cuándo llega?</title>
     <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="css/ionicons.min.css" rel="stylesheet" type="text/css">
-    <link href="js/ol3/ol.css" rel="stylesheet" type="text/css">
     <link href="css/font-awesome.css" rel="stylesheet" type="text/css">
     <link href="css/jAlert-v3.css" rel="stylesheet">
     <link href="css/snap.css" rel="stylesheet">
     <link href="css/index.css" rel="stylesheet" type="text/css">
     <link href="css/animacion_carga.css" rel="stylesheet" type="text/css">
     <link href="js/combobox/css/select2.min.css" rel="stylesheet" type="text/css">
+	<link href="js/ol3/ol.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 	<style>	
@@ -63,20 +63,8 @@
             <div class="col-xs-12 fondo_top" style="height:50px;">
 				<div id="top_titulo" style="border-bottom: 1px solid #e5e5e5; padding: 12px;"><span>Menú de Opciones</span></div>
             </div>
-            <div class="col-xs-12" style="margin-top: 10px;">
-                <p class="menu_opciones" style="font-size: 16px; text-align: center;"><b>¿Que estas buscando?</b></p>
-            </div>
-            <div class="col-xs-12" style="margin-top: 15px;">
-                <input id="inputBusqueda" class="input_buscar" name="inputBusqueda" type="text" placeholder="buscar por nombre...">
-            </div>
-            <div class="col-xs-12" style="margin-top: 15px;">
-                <button type="button" class="btn btn-primary boton_verde_alpi" onclick="realizarBusqueda()" 
-                style="border-radius: 40px; height: 40px; width: 100%;">
-                    <i class="fa fa-search" style="margin-left:-1px;"></i>
-                </button>
-            </div>
-            <div class="col-xs-12" style="margin-top: 20px; margin-left:5px">
-                <div id="divAjaxResultadoBusqueda"></div>
+            <div class="col-xs-12"  style="margin-top: 20px; margin-left:5px">
+                <div class="menu_opciones" onclick="snapper.close(); $('#divContenido').load('./principal.html');"><i class="fa fa-envelope" style="margin-right: 5px;"></i>Inicio</div>
             </div>
             <div class="col-xs-12"  style="margin-top: 20px; margin-left:5px">
                 <div class="menu_opciones jframe_sugerencia"><i class="fa fa-envelope" style="margin-right: 5px;"></i>Sugerencias</div>
@@ -86,7 +74,7 @@
             </div>
         </div> 
     </div>    		
-    <div id="contenido"  class="snap-content">    
+    <div id="contenido"  class="snap-content" style="overflow:hidden">    
         <nav class="navbar navbar-default navbar-fixed-top fondo_top">        
             <div class="container">
                 <div id="do-drag" style="height: 50px;">
@@ -97,23 +85,55 @@
             </div>         
         </nav>
 		<div style="margin-top:60px; padding:10px;" id="divContenido">
-		</div>
+		</div>   
+        <nav class="navbar navbar-default navbar-fixed-bottom">        
+            <div class="container">
+                <div id="do-drag" style="height: 50px; text-align:center; font-size:28px;">
+                    <a onclick="snapper.close(); $('#divContenido').load('./principal.html');"><i class="fa fa-home"></i></a>
+                    <a onclick="snapper.close(); $('#divContenido').load('./resultado.html');"><i class="fa fa-globe"></i></a>
+                </div>       
+            </div>         
+        </nav>
 	</div>
 	<script type="text/javascript" src="cordova.js"></script>	  
-    <script type="text/javascript" src="js/ol3/ol.js"></script>	
     <script type="text/javascript" src="js/index.js"></script>    
-    <script type="text/javascript" src="js/libs/jquery.js"></script>		     
+    <script type="text/javascript" src="js/libs/jquery.js"></script>	
+	<script type="text/javascript" src="js/ol3/ol.js"></script>	     	     
     <script type="text/javascript" src="js/libs/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/libs/jquery.touchSwipe.min.js"></script> 
-    <script type="text/javascript" src="js/mapa/mapa.js"></script>
 	<script type="text/javascript" src="js/libs/jAlert-functions.min.js"></script>
     <script type="text/javascript" src="js/libs/jAlert-v3.min.js"></script>    
     <script type="text/javascript" src="js/libs/snap.js"></script>         
-    <script type="text/javascript" src="js/combobox/js/select2.min.js"></script>        
+    <script type="text/javascript" src="js/combobox/js/select2.min.js"></script>   
 
     <script type="text/javascript">
+		var urlHost = 'http://200.58.108.122/gis';
+		var posActual = [-6506141.183454158, -4110246.2464916063];
+
 		var parada = null; // id de la parada activa
+		var paradaBusqueda = []; // id de la parada activa
+		var colectivoProximo = []; // id de la parada activa
 		
+		/* PARAMETROS deben estar en 4326 */
+		function puntoGPS(xparam, yparam){	
+			var pos3857 = ol.proj.transform([xparam, yparam],'EPSG:4326','EPSG:3857');
+			var xAnt = posActual[0];
+			var yAnt = posActual[1];
+			var x = pos3857[0];
+			var y = pos3857[1];
+			
+			posActual[0] = x;
+			posActual[1] = y;
+			
+			buscarParadaCercana();
+		}
+
+		$( document ).ready( function() { 
+			//inicializar(); 
+			//navigator.geolocation.getCurrentPosition(onSuccessGPS, onErrorGPS);  
+			var watchID = navigator.geolocation.watchPosition(onSuccessGPS, onErrorGPS, { timeout: 3000, enableHighAccuracy: true  });
+		});
+
 		var snapper = new Snap({
 			element: document.getElementById('contenido'),
 			dragger: document.getElementById('do-drag'),
@@ -139,7 +159,7 @@
 				$("#inputBusqueda").on( "keydown", function(event) {
 			      if(event.which == 13) 
 					realizarBusqueda();
-				});			
+				});
 				
 				$('.jframe_about').alertOnClick({
 				   'iframe': 'about.html',
@@ -189,8 +209,8 @@
 			var param = '';
 			$('#divBusquedaResultado').html('Buscando...');
 				
-			param += 'codcalle='+$('#busquedaCalle').val();
-			param += '&codcalleint='+$('#busquedaCalleInt').val();
+			param += 'codcalle='+paradaBusqueda.codcalle;
+			param += '&codcalleint='+paradaBusqueda.codcalleint;
 			
 			$.getJSON( urlHost+"/ws/transporteurbano/paradacercana?"+param, function( data ) {
 				cuandollega(data[0][0]);
@@ -204,7 +224,10 @@
 			var url = urlHost+"/ws/transporteurbano/cuandollega/"+parada.id+'/'+parada.linea;
 			
 			$.getJSON( url, function( data ) {
-				$('#divBusquedaResultado').html(datosparada+'<br>Distancia de la unidad: '+data[0].costototal+'<br>'+data[0].geom);
+				$('#divParada').html(datosparada);
+				if (typeof data[0] != 'undefined') {
+					$('#divParada').append('<br>Distancia de la unidad: '+data[0].costototal+'<br>'+data[0].geom);
+				}
 			});
 		}
 		
@@ -214,6 +237,7 @@
 				
 			param += 'xy='+ol.proj.transform(posActual,'EPSG:3857','EPSG:4326')
 			$.getJSON( urlHost+"/ws/transporteurbano/paradacercana?"+param, function( data ) {
+				cuandollega(data[0][0]);
 				var html = obtenerDatosMostrarParada(data[0][0]);
 				$('#divParada').html(html);
 				$('#divParadaActualizar').html('');

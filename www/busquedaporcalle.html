@@ -1,69 +1,45 @@
 <div class="panel panel-default">
-	<div class="panel-heading">
-		Búsqueda por calle
+	<div class="panel-heading" id="divBusquedaCalleTitulo">
+		Búsqueda por calle - Seleccione la calle
 	</div>
 	<div class="panel-body" id="divBusqueda">
 		<div class="form-group">
-			<label>Calle</label><br>
-			<select class="combobox-autocomplete-calle" style="width:300px" id="busquedaCalle" name="busquedaCalle" onchange="">
-			</select>
+			<input id="inputCalle" class="form-control" placeholder="Ingrese la calle" onkeyup="buscarCalles()" />
 		</div>
-		<div class="form-group">
-			<label>Intersección</label><br>
-			<select class="combobox-autocomplete-calleint" style="width:300px" id="busquedaCalleInt" name="busquedaCalleInt" onchange="">
-			</select>
-		</div>
-		<div class="form-group">
-			<div class="col-sm-offset-2 col-sm-10">
-				<button type="button" class="btn btn-default" onclick="buscarParada()">Buscar</button>
-			</div>
-		</div>
-		<div id="divBusquedaResultado">
+		<div id="divResultadoCalle">
 		</div>
 	</div>
 </div>
 <script>
-/**/
-$(".combobox-autocomplete-calle").select2({
-	ajax: {
-		url: urlHost+"/ws/calles/json_combo",
-		dataType: 'json',
-		delay: 250,
-		data: function (params) {
-			return {
-				q: params.term, // search term
-				page: params.page
-			};
-		},
-		processResults: function (data, page) {
-			$('#busquedaCalle').text('');
-			return {
-				results: data.items
-			};
-		},
-		cache: true
-	},
-	minimumInputLength: 1,
-});
-$(".combobox-autocomplete-calleint").select2({
-	ajax: {
-		url: urlHost+"/ws/calles/json_combo",
-		dataType: 'json',
-		delay: 250,
-		data: function (params) {
-			return {
-				q: params.term, // search term
-				page: params.page
-			};
-		},
-		processResults: function (data, page) {
-			$('#busquedaCalleInt').text('');
-			return {
-				results: data.items
-			};
-		},
-		cache: true
-	},
-	minimumInputLength: 1,
-});
+var paso = 1;
+
+function buscarCalles(){
+	if ($('#inputCalle').val().length > 1){
+		$('#divResultadoCalle').html('...');
+		$.getJSON( urlHost+"/ws/calles/json_combo?q="+$('#inputCalle').val(), function( data ) {
+			$('#divResultadoCalle').html('');
+			for (var i=0; i<data.items.length; i++){
+				var html = '<div class="panel panel-default" onclick="seleccionCalle(\''+data.items[i].id+'\')" style="margin:3px;"><div class="panel-body">';
+				html += '<div class="col-xs-9">'+data.items[i].text+'</div>';
+				html += '<div class="col-xs-3"><i class="fa fa-search"></i></div>';
+				html += '</div></div>';
+				$('#divResultadoCalle').append(html);
+			}			
+		});
+	}
+}
+
+function seleccionCalle(codcalle){
+	if (paso == 1){
+		paradaBusqueda = []; // limpia la variable
+		paradaBusqueda.codcalle = codcalle;
+		paso = 2;
+		$('#inputCalle').val('');
+		$('#divResultadoCalle').html('');
+		$('#divBusquedaCalleTitulo').html('Búsqueda por calle - Seleccione intersección');
+	} else if (paso == 2){
+		paradaBusqueda.codcalleint = codcalle;
+		$("#divContenido").load('./resultado.html');
+	}
+}
 </script>

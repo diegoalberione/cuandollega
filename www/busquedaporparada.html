@@ -1,0 +1,36 @@
+<div class="panel panel-default">
+	<div class="panel-heading" id="divBusquedaCalleTitulo">
+		Búsqueda por número de parada
+	</div>
+	<div class="panel-body" id="divBusqueda">
+		<div class="form-group">
+			<input id="inputParada" type="number" class="form-control" placeholder="Ingrese la parada" onkeyup="buscarParada()" />
+		</div>
+		<div id="divResultadoParada">
+		</div>
+	</div>
+</div>
+<script>
+
+function buscarParada(){
+	if ($('#inputParada').val().length > 0){
+		$('#divResultadoParada').html('...');
+		$.getJSON( urlHost+"/ws/transporteurbano/json_paradas?q="+$('#inputParada').val(), function( data ) {
+			$('#divResultadoParada').html('');
+			for (var i=0; i<data.items.length; i++){
+				var html = '<div class="panel panel-default" onclick="seleccionParada(\''+data.items[i].id+'\')" style="margin:3px;"><div class="panel-body">';
+				html += '<div class="col-xs-9">'+data.items[i].text+'</div>';
+				html += '<div class="col-xs-3"><i class="fa fa-search"></i></div>';
+				html += '</div></div>';
+				$('#divResultadoParada').append(html);
+			}			
+		});
+	}
+}
+
+function seleccionParada(id){
+	paradaBusqueda = []; // limpia la variable
+	paradaBusqueda.id = id;
+	$("#divContenido").load('./resultado.html');
+}
+</script>
