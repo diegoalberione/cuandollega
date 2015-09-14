@@ -251,9 +251,9 @@
 			parada = paradaParam;
 			
 			if (parada.distancia >= 1000){
-				html = 'a '+(parada.distancia / 1000).toFixed(2)+' km.';
+				html = 'Parada a '+(parada.distancia / 1000).toFixed(2)+' km.';
 			} else{
-				html = 'a '+parseFloat(parada.distancia).toFixed(2)+' m.';
+				html = 'Parada a '+parseFloat(parada.distancia).toFixed(2)+' m.';
 			}
 			
 			if (parada.lineauno == true){

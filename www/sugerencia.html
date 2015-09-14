@@ -49,7 +49,7 @@
 		$('#divEnviarSugerencia').html('<div class="alert alert-info" role="alert">Enviando sugerencia...</div>');
 		$('#divForm').hide(500);
 		
-		var url = parent.window.urlHost+'/ws/sugerencias/nueva';
+		var url = '';//parent.window.urlHost+'/ws/sugerencias/nueva';
 		$.ajax({
 			method: "POST",
 			url: url,

@@ -49,7 +49,7 @@ if (typeof paradaBusqueda.codcalle != 'undefined') {
 		
 		$.getJSON( url, function( data ) {
 			colectivoProximo = data[0];
-			$('#divResultado').html(datosparada+'<br>Colectivo próximo a: '+colectivoProximo.costototal+'<br>'+colectivoProximo.geom);
+			$('#divResultado').html(datosparada+'<br>Colectivo próximo a: '+colectivoProximo.costototal+'<br>Unidad: '+colectivoProximo.unidad_id+'<br>Ult. Actualización: '+colectivoProximo.fecha);
 			
 			inicializar();
 		});
@@ -66,7 +66,7 @@ if (typeof paradaBusqueda.codcalle != 'undefined') {
 		
 		$.getJSON( url, function( data ) {
 			colectivoProximo = data[0];
-			$('#divResultado').html(datosparada+'<br>Colectivo próximo a: '+colectivoProximo.costototal+'<br>'+colectivoProximo.geom);
+			$('#divResultado').html(datosparada+'<br>Colectivo próximo a: '+colectivoProximo.costototal+'<br>Unidad: '+colectivoProximo.unidad_id+'<br>Ult. Actualización: '+colectivoProximo.fecha);
 			
 			inicializar();
 		});
@@ -145,6 +145,8 @@ function inicializar(){
 		geometry: feature.getGeometry(),
 		nombre: 'Parada'
 	});
+	
+	view.setCenter(feature.getGeometry().getFirstCoordinate());
 
 	featuresOverlayParada = new ol.FeatureOverlay({
 		map: map,
@@ -153,7 +155,7 @@ function inicializar(){
 	
 	var iconStyle = new ol.style.Style({
 		image: new ol.style.Icon(({
-			anchor: [16, 16],
+			anchor: [16, 30],
 			anchorXUnits: 'pixels',
 			anchorYUnits: 'pixels',
 			opacity: 0.75,
