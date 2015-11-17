@@ -1,0 +1,104 @@
+<div class="alert alert-warning">
+	<div class="row">
+		<div class="col-md-4">
+			<b>Zona</b>: {{filtro.zona.value}}
+		</div>
+		<div class="col-md-4">
+			<b>Desde</b>: {{filtro.fechadesde | date:'dd/MM/yyyy'}}
+		</div>
+		<div class="col-md-4">
+			<b>Hasta</b>: {{filtro.fechahasta | date:'dd/MM/yyyy'}}
+		</div>
+		<div class="col-md-4">
+			<b>Laboratorios</b>:<i ng-repeat="laboratorio in filtro.laboratorios"> {{laboratorio.LaboratorioProducto}} |</i>
+		</div>
+		<div class="col-md-4">
+			<b>Gerentes</b>:<i ng-repeat="supervisor in filtro.supervisores"> {{supervisor.nombreApellidoSupervisor}} |</i>
+		</div>
+		<div class="col-md-4">
+			<b>Representantes</b>:<i ng-repeat="representante in filtro.representantes"> {{representante.nombreApellidoRepresentante}} |</i>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12 col-md-5">
+		<openlayers ol-center="center" ol-defaults="defaults" height="520">
+			<ol-layer ol-layer-properties="lyProvincias"></ol-layer>
+		</openlayers>
+	</div>
+	<div class="col-xs-12 col-md-7">
+		<div class="form-group">
+			<div class="radio">
+				<label class="i-checks">
+					<input type="radio" name="a" ng-model="filtro.zona.tipo" value="0" ng-disabled="paisSel == ''">
+					<i></i>
+					{{paisSel}}
+				</label><span ng-show="paisSel == ''">(clic en el mapa)</span>
+			</div>
+			<div class="radio">
+				<label class="i-checks">
+					<input type="radio" name="a" ng-model="filtro.zona.tipo" value="1" ng-disabled="regionSel == ''">
+					<i></i>
+					Región: {{regionSel}} 
+				</label><span ng-show="regionSel == ''">(clic en el mapa)</span>
+			</div>
+			<div class="radio">
+				<label class="i-checks">
+					<input type="radio" name="a" ng-model="filtro.zona.tipo" value="2" ng-disabled="provinciaSel == ''">
+					<i></i>
+					Provincia: {{provinciaSel}} 
+				</label><span ng-show="provinciaSel == ''">(clic en el mapa)</span>
+			</div>
+        </div>
+		<div class="form-group">
+			<div class="checkbox" ng-repeat="laboratorio in laboratorios">
+				<label class="i-checks">
+					<input type="checkbox" ng-model="laboratorio.checked" ng-change="seleccionarLaboratorio()" name="group" id="{{laboratorio.knLaboratorioProducto}}" />
+					<i></i>
+					{{laboratorio.LaboratorioProducto}}
+				</label>
+			</div>
+        </div>
+		<div class="row">
+			<div class="col-md-6">
+				Fecha Desde:
+				<p class="input-group">
+					<input type="text" class="form-control" uib-datepicker-popup="{{fechaDesde.format}}" ng-model="fechaDesde.value" is-open="fechaDesde.opened" ng-required="true" close-text="ok" />
+					<span class="input-group-btn">
+						<button type="button" class="btn btn-default" ng-click="fechaDesde.opened = true"><i class="glyphicon glyphicon-calendar"></i></button>
+					</span>
+				</p>
+			</div>
+			<div class="col-md-6">
+				Fecha Hasta:
+				<p class="input-group">
+					<input type="text" class="form-control" uib-datepicker-popup="{{fechaHasta.format}}" ng-model="fechaHasta.value" min-date="filtro.fechadesde" is-open="fechaHasta.opened" ng-required="true" close-text="ok" />
+					<span class="input-group-btn">
+						<button type="button" class="btn btn-default" ng-click="fechaHasta.opened = true"><i class="glyphicon glyphicon-calendar"></i></button>
+					</span>
+				</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				Gerente:
+				<ui-select multiple ng-model="filtro.supervisores" theme="bootstrap">
+					<ui-select-match placeholder="(todos)">{{$item.nombreApellidoSupervisor}}</ui-select-match>
+					<ui-select-choices repeat="person in supervisores | listboxFilter: {nombreApellidoSupervisor: $select.search}">
+					  <div ng-bind-html="person.nombreApellidoSupervisor | highlight: $select.search"></div>
+					</ui-select-choices>
+				</ui-select>
+			</div>
+			<div class="col-md-6">
+				Representante:
+				<ui-select multiple ng-model="filtro.representantes" theme="bootstrap">
+					<ui-select-match placeholder="(todos)">{{$item.nombreApellidoRepresentante}}</ui-select-match>
+					<ui-select-choices repeat="person in representantes | listboxFilter: {nombreApellidoRepresentante: $select.search}">
+					  <div ng-bind-html="person.nombreApellidoRepresentante | highlight: $select.search"></div>
+					</ui-select-choices>
+				</ui-select>
+			</div>
+		</div>
+	</div>
+</div>
+
