@@ -1,6 +1,6 @@
 <div class="panel panel-info">
 	<div class="panel-heading">Paradas Cercanas: {{filtro.titulo}}</div>
-	<div class="panel-body">
+	<div class="panel-body" ng-init="listarParadascercanas()">
 		<div ng-repeat="parada in paradascercanas">
 			<div class="panel panel-default" ng-click="seleccionarParada(parada)">
 				<div class="panel-body">

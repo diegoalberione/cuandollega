@@ -13,11 +13,7 @@ app.controller('BusquedasController',  [
 		$rootScope.rootMenu = 1;
 		
 		$scope.filtro = filtrosService.get();
-		
-		paradasFactory.listarcercanas($scope.filtro).then(function(res){
-			$scope.paradascercanas = res.data;
-		});
-		
+				
 		$scope.seleccionarParada = function(parada){
 			$scope.filtro.parada = parada;
 			$scope.filtro.x = parseFloat(parada.x);
@@ -66,8 +62,15 @@ app.controller('BusquedasController',  [
 				$scope.filtro.y = 0;
 				filtrosService.set($scope.filtro);
 			}
-				
+			
 			$location.path('/busquedas/paradascercanas');
+		}
+		
+		$scope.paradascercanas = [];
+		$scope.listarParadascercanas = function(){
+			paradasFactory.listarcercanas($scope.filtro).then(function(res){
+				$scope.paradascercanas = res.data;
+			});
 		}
 		
 		$scope.$watch('filtro.altura', function(newValue, oldValue) {
