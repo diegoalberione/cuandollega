@@ -1,0 +1,47 @@
+<div class="panel panel-default">
+	<div class="panel-heading" id="divBusquedaCalleTitulo">
+		Seleccione la calle
+	</div>
+	<div class="panel-body" id="divBusqueda">
+		<div class="form-group">
+			<label for="">Calle</label>
+			<input type="text" 
+				ng-model="filtro.nombrecalle" placeholder="Ingrese nombre..." 
+				uib-typeahead="nombre as entidad.nombre for entidad in getCalles($viewValue,1)"
+				typeahead-on-select="seleccionCalle($item,1)"
+				typeahead-loading="loading" 
+				typeahead-no-results="noResults" class="form-control"
+				typeahead-min-length="3"
+			/>
+			<i ng-show="loading" class="glyphicon glyphicon-refresh"></i>
+			<div ng-show="noResults">
+				<i class="glyphicon glyphicon-remove"></i> Sin resultado
+			</div>
+		</div>
+		<div ng-show="filtro.codcalle != ''">
+			<label for=""><b>Ingrese intersección o altura:</b></label>
+			<div class="form-group">
+				<label for="">Intersección</label>
+				<input type="text" 
+					ng-model="filtro.nombrecalleint" placeholder="Ingrese nombre..." 
+					uib-typeahead="nombre as entidad.nombre for entidad in getCalles($viewValue,2)"
+					typeahead-on-select="seleccionCalle($item,2)"
+					typeahead-loading="loading2" 
+					typeahead-no-results="noResults2" class="form-control"
+					typeahead-min-length="3"
+				/>
+				<i ng-show="loading2" class="glyphicon glyphicon-refresh"></i>
+				<div ng-show="noResults2">
+					<i class="glyphicon glyphicon-remove"></i> No existe la intersección
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="">Altura</label>
+				<input type="text" class="form-control" ng-model="filtro.altura" placeholder="altura">
+			</div>
+		</div>
+		<div class="pull-right" ng-show="filtro.codcalle != '' && (filtro.codcalleint != '' || filtro.altura > 0)">
+			<a class="btn btn-default" ng-click="busquedaParadascercanas(2)">Buscar paradas</a>
+		</div>
+	</div>
+</div>

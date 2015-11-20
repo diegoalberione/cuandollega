@@ -27,8 +27,12 @@ var app = angular.module('APP', [
 	.constant('CONFIG', {
 		APIURL: "http://200.58.108.122/gis/ws",
 	})
-	.run(['$rootScope',function($rootScope) {
+	.run(['$rootScope','$anchorScroll',function($rootScope,$anchorScroll) {
 		$rootScope.rootMenu=1;
+		
+		$rootScope.$on("$locationChangeSuccess", function (event, currentRoute, previousRoute) {
+			$anchorScroll('header');
+		});
 	}])	 
 	.config(["$routeProvider",  function ($routeProvider){
 		
@@ -53,6 +57,11 @@ var app = angular.module('APP', [
 				controller: 'BusquedasController',
 				controllerAs: 'busquedas'
 			})
+			.when('/busquedas/porcalle', {
+				templateUrl: 'views/busquedas/porcalle.html',
+				controller: 'BusquedasController',
+				controllerAs: 'busquedas'
+			})
 			.when('/mapa', {
 				templateUrl: 'views/mapa/index.html',
 				controller: 'MapaController',
@@ -65,3 +74,4 @@ var app = angular.module('APP', [
 		;
 	}])
 ;
+

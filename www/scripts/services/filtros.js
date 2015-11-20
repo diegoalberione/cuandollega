@@ -1,9 +1,13 @@
 ﻿app.service('filtrosService', function () {
 	var filtro = {
-		x: -61.33,
-		y: -31.35,
+		titulo: 'Por defecto',
+		x: -61.49179,
+		y: -31.25273,
 		codcalle: '',
+		nombrecalle: '',
 		altura: 0,
+		codcalleint: '',
+		nombrecalleint: '',
 		parada: [],
 		linea: 0
 	};

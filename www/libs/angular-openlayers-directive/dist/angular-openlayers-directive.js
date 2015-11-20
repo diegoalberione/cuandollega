@@ -1159,6 +1159,8 @@ angular.module('openlayers-directive').factory('olHelpers', ["$q", "$log", "$htt
             return layer.type;
         } else {
             switch (layer.source.type) {
+                case 'Tile':
+                    return 'Tile';
                 case 'ImageWMS':
                     return 'Image';
                 case 'ImageStatic':
@@ -1181,7 +1183,6 @@ angular.module('openlayers-directive').factory('olHelpers', ["$q", "$log", "$htt
 
     var createProjection = function(view) {
         var oProjection;
-
         switch (view.projection) {
             case 'pixel':
                 if (!isDefined(view.extent)) {
@@ -1196,7 +1197,14 @@ angular.module('openlayers-directive').factory('olHelpers', ["$q", "$log", "$htt
                 });
                 break;
             default:
-                oProjection = new ol.proj.get(view.projection);
+				if (typeof view.projection === 'string'){
+					oProjection = new ol.proj.get(view.projection);
+				} else{
+					oProjection = new ol.proj.Projection({
+						code: view.projection.code,
+						extent: view.projection.extent
+					});
+				}                
                 break;
         }
 
@@ -1263,7 +1271,7 @@ angular.module('openlayers-directive').factory('olHelpers', ["$q", "$log", "$htt
                 if (source.urls) {
                     wmsConfiguration.urls = source.urls;
                 }
-
+				
                 oSource = new ol.source.TileWMS(wmsConfiguration);
                 break;
 
