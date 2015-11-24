@@ -8,9 +8,28 @@
  * Controller of the APP
  */
 app.controller('BusquedasController',  [
-			'$rootScope','$scope','$http','$location','miposicionService','filtrosService','paradasFactory','CONFIG','jwtHelper','olData','olHelpers','store', 
-	function($rootScope,  $scope,  $http,  $location,  miposicionService,  filtrosService,  paradasFactory,  CONFIG,  jwtHelper,  olData,  olHelpers,  store){
+			'$rootScope','$scope','$http','$location','cordovaGeolocationService','miposicionService','filtrosService','paradasFactory','CONFIG','jwtHelper','olData','olHelpers','store', 
+	function($rootScope,  $scope,  $http,  $location,  cordovaGeolocationService,  miposicionService,  filtrosService,  paradasFactory,  CONFIG,  jwtHelper,  olData,  olHelpers,  store){
 		$rootScope.rootMenu = 1;
+		
+		/* GeoPosicion */
+		$scope.alertGeoLocation = function() {
+			var onSuccess = function(position) {
+			alert('Latitude: ' + position.coords.latitude + '\n'
+				+ 'Longitude: ' + position.coords.longitude + '\n'
+				+ 'Altitude: ' + position.coords.altitude + '\n'
+				+ 'Accuracy: ' + position.coords.accuracy + '\n'
+				+ 'Altitude Accuracy: ' + position.coords.altitudeAccuracy
+				+ '\n' + 'Heading: ' + position.coords.heading + '\n'
+				+ 'Timestamp: ' + position.timestamp + '\n'); };
+			navigator.geolocation.getCurrentPosition(onSuccess);
+		};
+		$scope.alertGeoLocation();
+		
+		$scope.vibrateNotify = function() {
+			navigator.notification.vibrate(1000);
+		};
+		/* END GeoPosicion */		
 		
 		$scope.filtro = filtrosService.get();
 				
