@@ -8,15 +8,15 @@
  * Controller of the APP
  */
 app.controller('BusquedasController',  [
-			'$rootScope','$scope','$http','$location','cordovaGeolocationService','miposicionService','filtrosService','paradasFactory','CONFIG','jwtHelper','olData','olHelpers','store', 
-	function($rootScope,  $scope,  $http,  $location,  cordovaGeolocationService,  miposicionService,  filtrosService,  paradasFactory,  CONFIG,  jwtHelper,  olData,  olHelpers,  store){
+			'$rootScope','$scope','$http','$location','miposicionService','filtrosService','paradasFactory','CONFIG','jwtHelper','olData','olHelpers','store', 
+	function($rootScope,  $scope,  $http,  $location,  miposicionService,  filtrosService,  paradasFactory,  CONFIG,  jwtHelper,  olData,  olHelpers,  store){
 		$rootScope.rootMenu = 1;
 		
 		/* GeoPosicion */
-		$scope.currentPosition = '';
 		navigator.geolocation.getCurrentPosition(function(position) {
 			miposicionService.setX(position.coords.longitude);
 			miposicionService.setY(position.coords.latitude);
+			/**
 			$scope.currentPosition = 'Latitude: ' + position.coords.latitude + '\n'
 				+ 'Longitude: ' + position.coords.longitude + '\n'
 				+ 'Altitude: ' + position.coords.altitude + '\n'
@@ -24,6 +24,7 @@ app.controller('BusquedasController',  [
 				+ 'Altitude Accuracy: ' + position.coords.altitudeAccuracy
 				+ '\n' + 'Heading: ' + position.coords.heading + '\n'
 				+ 'Timestamp: ' + position.timestamp + '\n';
+			/**/
 		});
 		
 		$scope.vibrateNotify = function() {
