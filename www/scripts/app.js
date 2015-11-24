@@ -22,7 +22,8 @@ var app = angular.module('APP', [
 		'ui.grid.pagination',
 		'angular-jwt',
 		'angular-storage',
-		'openlayers-directive'
+		'openlayers-directive',
+		'cordovaGeolocationModule'
 	])
 	.constant('CONFIG', {
 		APIURL: "http://200.58.108.122/gis/ws",

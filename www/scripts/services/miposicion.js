@@ -16,6 +16,12 @@ app.service('miposicionService', function () {
 		},
 		getY: function () {
 			return posicion.y;
+		},
+		setX: function (x) {
+			posicion.x = x;
+		},
+		setY: function (y) {
+			posicion.y = y;
 		}
 	};
 });

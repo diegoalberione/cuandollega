@@ -13,18 +13,18 @@ app.controller('BusquedasController',  [
 		$rootScope.rootMenu = 1;
 		
 		/* GeoPosicion */
-		$scope.alertGeoLocation = function() {
-			var onSuccess = function(position) {
-			alert('Latitude: ' + position.coords.latitude + '\n'
+		$scope.currentPosition = '';
+		navigator.geolocation.getCurrentPosition(function(position) {
+			miposicionService.setX(position.coords.longitude);
+			miposicionService.setY(position.coords.latitude);
+			$scope.currentPosition = 'Latitude: ' + position.coords.latitude + '\n'
 				+ 'Longitude: ' + position.coords.longitude + '\n'
 				+ 'Altitude: ' + position.coords.altitude + '\n'
 				+ 'Accuracy: ' + position.coords.accuracy + '\n'
 				+ 'Altitude Accuracy: ' + position.coords.altitudeAccuracy
 				+ '\n' + 'Heading: ' + position.coords.heading + '\n'
-				+ 'Timestamp: ' + position.timestamp + '\n'); };
-			navigator.geolocation.getCurrentPosition(onSuccess);
-		};
-		$scope.alertGeoLocation();
+				+ 'Timestamp: ' + position.timestamp + '\n';
+		});
 		
 		$scope.vibrateNotify = function() {
 			navigator.notification.vibrate(1000);

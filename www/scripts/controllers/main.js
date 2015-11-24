@@ -8,8 +8,8 @@
  * Controller of the APP
  */
 app.controller('MainController',  [
-			'$rootScope','$scope','$http','$location','CONFIG','filtroService','supervisoresFactory','representantesFactory','laboratoriosFactory','jwtHelper','olData','olHelpers','store', 
-	function($rootScope,  $scope,  $http,  $location,  CONFIG,  filtroService,  supervisoresFactory,  representantesFactory,  laboratoriosFactory,  jwtHelper,  olData,  olHelpers,  store){
+			'$rootScope','$scope','$http','$location','CONFIG','cordovaGeolocationService','filtroService','supervisoresFactory','representantesFactory','laboratoriosFactory','jwtHelper','olData','olHelpers','store', 
+	function($rootScope,  $scope,  $http,  $location,  CONFIG,  cordovaGeolocationService   filtroService,  supervisoresFactory,  representantesFactory,  laboratoriosFactory,  jwtHelper,  olData,  olHelpers,  store){
 		$rootScope.rootMenu = 1;
 		
 		$scope.filtro = filtroService.get();
