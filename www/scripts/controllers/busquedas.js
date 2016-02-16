@@ -8,14 +8,19 @@
  * Controller of the APP
  */
 app.controller('BusquedasController',  [
-			'$rootScope','$scope','$http','$location','miposicionService','filtrosService','paradasFactory','CONFIG','jwtHelper','olData','olHelpers','store', 
-	function($rootScope,  $scope,  $http,  $location,  miposicionService,  filtrosService,  paradasFactory,  CONFIG,  jwtHelper,  olData,  olHelpers,  store){
+			'$rootScope','$scope','$http','$location','miposicionService','filtrosService','paradasFactory','favoritosService','CONFIG','jwtHelper','olData','olHelpers','store', 
+	function($rootScope,  $scope,  $http,  $location,  miposicionService,  filtrosService,  paradasFactory,  favoritosService,  CONFIG,  jwtHelper,  olData,  olHelpers,  store){
 		$rootScope.rootMenu = 1;
 		
 		/* GeoPosicion */
 		navigator.geolocation.getCurrentPosition(function(position) {
-			miposicionService.setX(position.coords.longitude);
-			miposicionService.setY(position.coords.latitude);
+			var p = miposicionService.get();
+			p.x = position.coords.longitude;
+			p.y = position.coords.latitude;
+			p.altitude = position.coords.altitudeAccuracy;
+			p.accuracy = position.coords.accuracy;
+			p.timestamp = position.coords.timestamp;
+			miposicionService.set(p);
 			/**
 			$scope.currentPosition = 'Latitude: ' + position.coords.latitude + '\n'
 				+ 'Longitude: ' + position.coords.longitude + '\n'
@@ -86,12 +91,41 @@ app.controller('BusquedasController',  [
 			$location.path('/busquedas/paradascercanas');
 		}
 		
+		$scope.busquedaParadasPorLinea = function(linea){
+			$scope.filtro.linea = linea;
+			filtrosService.set($scope.filtro);
+			
+			$location.path('/busquedas/porlinea');
+		}
+		
 		$scope.paradascercanas = [];
 		$scope.listarParadascercanas = function(){
 			paradasFactory.listarcercanas($scope.filtro).then(function(res){
 				$scope.paradascercanas = res.data;
 			});
 		}
+		
+		$scope.paradasporlinea = [];
+		$scope.listarParadasPorLinea = function(){
+			paradasFactory.listarporlinea($scope.filtro).then(function(res){
+				$scope.paradasporlinea = res.data;
+			});
+		}
+		
+		/* FAVORITOS */
+		$scope.guardarEnFavoritos = function(parada){
+			favoritosService.guardar(parada);
+			parada.existeEnFavorito = true;
+		};
+		$scope.verificarExistenciaEnFavoritos = function(parada){
+			parada.existeEnFavorito = favoritosService.existe(parada);
+		};
+		$scope.quitarDeFavoritos = function(parada){
+			favoritosService.quitar(parada);
+			$scope.favoritosparadas = favoritosService.listar();
+			parada.existeEnFavorito = false;
+		};
+		/* END FAVORITOS */
 		
 		$scope.$watch('filtro.altura', function(newValue, oldValue) {
 			$scope.filtro.codcalleint = '';

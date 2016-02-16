@@ -42,6 +42,11 @@ var app = angular.module('APP', [
 				controller: 'BusquedasController',
 				controllerAs: 'busquedas'
 			})
+			.when('/favoritos', {
+				templateUrl: 'views/favoritos/index.html',
+				controller: 'FavoritosController',
+				controllerAs: 'favoritos'
+			})
 			.when('/busquedas', {
 				templateUrl: 'views/busquedas/index.html',
 				controller: 'BusquedasController',
@@ -59,6 +64,11 @@ var app = angular.module('APP', [
 			})
 			.when('/busquedas/porcalle', {
 				templateUrl: 'views/busquedas/porcalle.html',
+				controller: 'BusquedasController',
+				controllerAs: 'busquedas'
+			})
+			.when('/busquedas/porlinea', {
+				templateUrl: 'views/busquedas/porlinea.html',
 				controller: 'BusquedasController',
 				controllerAs: 'busquedas'
 			})

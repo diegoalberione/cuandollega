@@ -1,7 +1,10 @@
 app.service('miposicionService', function () {
 	var posicion = {
 		x: -61.49179,
-		y: -31.25273
+		y: -31.25273,
+		altitude: 0,
+		accuracy: 0,
+		timestamp: 0
 	};
 
 	return {

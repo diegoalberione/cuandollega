@@ -1,14 +1,13 @@
 <div class="panel panel-info">
-	<div class="panel-heading">Paradas Cercanas: {{filtro.titulo}}</div>
-	<div class="panel-body" ng-init="listarParadascercanas()">
-		<div ng-repeat="parada in paradascercanas">
+	<div class="panel-heading">Paradas de Línea {{filtro.linea}}</div>
+	<div class="panel-body" ng-init="listarParadasPorLinea()">
+		<div ng-repeat="parada in paradasporlinea">
 			<div class="panel panel-default">
 				<div class="panel-body">
 					<b>Línea: {{parada.linea}}</b> | Nro. {{parada.numero}}
 					<br>{{parada.ubicacion}}
 					<br>Distancia: {{parada.distancia | number:2}} m
 					<div class="pull-right">
-						<button class="btn btn-default" ng-click="busquedaParadasPorLinea(parada.linea)"><i class="glyphicon glyphicon-plus"></i></button>
 						<button class="btn btn-default" ng-click="guardarEnFavoritos(parada)" ng-show="parada.existeEnFavorito == false" ng-init="verificarExistenciaEnFavoritos(parada)"><i class="glyphicon glyphicon-heart-empty"></i></button>
 						<button class="btn btn-default" ng-click="quitarDeFavoritos(parada)" ng-show="parada.existeEnFavorito" ng-init="verificarExistenciaEnFavoritos(parada)"><i class="glyphicon glyphicon-heart"></i></button>
 						<button class="btn btn-default" ng-click="seleccionarParada(parada)"><i class="glyphicon glyphicon-map-marker"></i></button>

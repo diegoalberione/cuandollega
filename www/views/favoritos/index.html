@@ -1,0 +1,22 @@
+<div class="panel panel-info">
+	<div class="panel-heading">
+		Favoritos
+	</div>
+	<div class="panel-body" ng-init="listarParadascercanas()">
+		<div style="text-align:right; margin-bottom:5px;">
+			<button class="btn btn-danger" ng-click="limpiarFavoritos()">Limpiar favoritos</button>
+		</div>
+		<div ng-repeat="parada in favoritosparadas">
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<b>Línea: {{parada.linea}}</b> | Nro. {{parada.numero}}
+					<br>{{parada.ubicacion}}
+					<div class="pull-right">
+						<button class="btn btn-default" ng-click="quitarDeFavoritos(parada)"><i class="glyphicon glyphicon-remove"></i></button>
+						<button class="btn btn-default" ng-click="seleccionarParada(parada)"><i class="glyphicon glyphicon-map-marker"></i></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

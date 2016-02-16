@@ -8,8 +8,8 @@
  * Controller of the APP
  */
 app.controller('MapaController',  [
-			'$rootScope','$scope','$http','$window','miposicionService','filtrosService','paradasFactory','colectivosFactory','CONFIG','jwtHelper','olData','olHelpers','store', 
-	function($rootScope,  $scope,  $http,  $window,  miposicionService,  filtrosService,  paradasFactory,  colectivosFactory,  CONFIG,  jwtHelper,  olData,  olHelpers,  store){
+			'$rootScope','$scope','$http','$window','$interval','miposicionService','filtrosService','paradasFactory','colectivosFactory','CONFIG','jwtHelper','olData','olHelpers','store', 
+	function($rootScope,  $scope,  $http,  $window,  $interval,  miposicionService,  filtrosService,  paradasFactory,  colectivosFactory,  CONFIG,  jwtHelper,  olData,  olHelpers,  store){
 		$rootScope.rootMenu = 3;
 		
 		$scope.mapaHeight = $window.innerHeight - 85;
@@ -66,16 +66,14 @@ app.controller('MapaController',  [
 		});
 		/**/
 		
-		$scope.markers = [
-			{
-				nombre: 'Mi posición',
-				lon: miposicionService.getX(),
-				lat: miposicionService.getY()
-			}
-		];
+		$scope.markerMiPosicion = {
+			nombre: 'Mi posición',
+			lon: miposicionService.getX(),
+			lat: miposicionService.getY()
+		};
 		
 		if ($scope.filtro.parada.x != null){
-			$scope.markers.push({
+			$scope.markerParada = {
 				nombre: 'Parada',
 				lon: parseFloat($scope.filtro.parada.x),
 				lat: parseFloat($scope.filtro.parada.y),
@@ -90,7 +88,7 @@ app.controller('MapaController',  [
 						}
 					}
 				}
-			});
+			};
 			
 			$scope.layers.push({
 				source: {
@@ -101,10 +99,27 @@ app.controller('MapaController',  [
 			});
 		}
 		
-		if ($scope.filtro.parada.id > 0){
+		$scope.markersColectivo = [];
+		$scope.obtenerCuandollega = function(){
 			colectivosFactory.cuandollega($scope.filtro).then(function(res){
 				$scope.colectivo = res.data;
-				$scope.markers.push({
+				
+				if ($scope.colectivo.costototal < 1000){
+					$scope.colectivo.costototalunidad = 'm';
+				} else{
+					$scope.colectivo.costototal = $scope.colectivo.costototal / 1000;
+					$scope.colectivo.costototalunidad = 'km';
+				}
+				
+				if ($scope.colectivo.tiempototal > 1){
+					$scope.colectivo.tiempototalunidad = 'min';
+				} else{
+					$scope.colectivo.tiempototal = $scope.colectivo.tiempototal * 60;
+					$scope.colectivo.tiempototalunidad = 'seg';
+				}
+				
+				$scope.markersColectivo = [];
+				$scope.markersColectivo.push({
 					nombre: 'Colectivo linea '+$scope.filtro.parada.linea,
 					lon: parseFloat(res.data.x),
 					lat: parseFloat(res.data.y),
@@ -122,6 +137,22 @@ app.controller('MapaController',  [
 				});
 			});
 		}
+		
+		var stopInterval;
+		if ($scope.filtro.parada.id > 0){
+			$scope.obtenerCuandollega();
+			var interval = $interval(function() {
+				$scope.obtenerCuandollega()
+			}, 5000);
+		}		
+		
+		$scope.ubicarMiPosicion = function(){
+			$scope.center = {
+				lon: miposicionService.getX(),
+				lat: miposicionService.getY(),
+				zoom: 10
+			};
+		};
 		
 	}
 ]);

@@ -75,14 +75,15 @@
 
     <div class="container" style="margin:0; padding:0;">
 		<div class="btn-group btn-group-justified" role="group" aria-label="...">
-			<a ng-show="rootMenu != 1" class="btn btn-default" ng-href="#/busquedas">Búsqueda</a>
-			<a ng-cloak ng-show="rootMenu == 1" class="btn btn-dark" ng-href="#/busquedas">Búsqueda</a>
 			
-			<a ng-show="rootMenu != 2" class="btn btn-default" ng-href="#/">Favoritos</a>
-			<a ng-cloak ng-show="rootMenu == 2" class="btn btn-dark" ng-href="#/">Favoritos</a>
+			<a ng-show="rootMenu != 1" class="btn btn-default" ng-href="#/busquedas"><i class="glyphicon glyphicon-search"></i> Búsqueda</a>
+			<a ng-cloak ng-show="rootMenu == 1" class="btn btn-dark" ng-href="#/busquedas"><i class="glyphicon glyphicon-search"></i> Búsqueda</a>
 			
-			<a ng-show="rootMenu != 3" class="btn btn-default" ng-href="#/mapa">Mapa</a>
-			<a ng-cloak ng-show="rootMenu == 3" class="btn btn-dark" ng-href="#/mapa">Mapa</a>
+			<a ng-show="rootMenu != 2" class="btn btn-default" ng-href="#/favoritos"><i class="glyphicon glyphicon-heart"></i> Favoritos</a>
+			<a ng-cloak ng-show="rootMenu == 2" class="btn btn-dark" ng-href="#/favoritos"><i class="glyphicon glyphicon-heart"></i> Favoritos</a>
+			
+			<a ng-show="rootMenu != 3" class="btn btn-default" ng-href="#/mapa"><i class="glyphicon glyphicon-map-marker"></i> Mapa</a>
+			<a ng-cloak ng-show="rootMenu == 3" class="btn btn-dark" ng-href="#/mapa"><i class="glyphicon glyphicon-map-marker"></i> Mapa</a>
 		</div>
 		
 		<div ng-view=""></div>
@@ -130,11 +131,13 @@
 	<script src="scripts/controllers/menu.js"></script>
 	<script src="scripts/controllers/busquedas.js"></script>
 	<script src="scripts/controllers/mapa.js"></script>
+	<script src="scripts/controllers/favoritos.js"></script>
 	
 	<script src="scripts/services/miposicion.js"></script>
 	<script src="scripts/services/filtros.js"></script>
 	<script src="scripts/services/paradas.js"></script>
 	<script src="scripts/services/colectivos.js"></script>
+	<script src="scripts/services/favoritos.js"></script>
 	
 	<!-- endbuild -->
 </body>
