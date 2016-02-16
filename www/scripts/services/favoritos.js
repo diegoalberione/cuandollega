@@ -5,6 +5,10 @@ app.service('favoritosService', [
 		return {
 			listar: function () {
 				favoritosParadas = store.get('favoritosParadas');
+				if (favoritosParadas == null){
+					favoritosParadas = [];
+					store.set('favoritosParadas', favoritosParadas);
+				}
 				return favoritosParadas;
 			},
 			existe: function(parada) {
@@ -20,6 +24,10 @@ app.service('favoritosService', [
 			guardar: function(parada) {
 				var existe = false;
 				favoritosParadas = store.get('favoritosParadas');
+				if (favoritosParadas == null){
+					favoritosParadas = [];
+					store.set('favoritosParadas', favoritosParadas);
+				}
 				angular.forEach(favoritosParadas, function(obj, key) {
 					if (obj.id == parada.id){
 						existe = true;
