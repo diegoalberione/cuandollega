@@ -4,7 +4,7 @@
 		<div ng-repeat="parada in paradascercanas">
 			<div class="panel panel-default">
 				<div class="panel-body">
-					<b>Línea: {{parada.linea}}</b> | Nro. {{parada.numero}}
+					<b>{{parada.nombre}}</b> | Nro. {{parada.numero}}
 					<br>{{parada.ubicacion}}
 					<br>Distancia: {{parada.distancia | number:2}} m
 					<div class="pull-right">

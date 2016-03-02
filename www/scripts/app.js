@@ -25,7 +25,8 @@ var app = angular.module('APP', [
 		'openlayers-directive'
 	])
 	.constant('CONFIG', {
-		APIURL: "http://200.58.108.122/gis/ws",
+		APIURL: "http://200.58.108.122/transporteurbano/api",
+		APIURL_GIS: "http://200.58.108.122/gis/ws",
 	})
 	.run(['$rootScope','$anchorScroll',function($rootScope,$anchorScroll) {
 		$rootScope.rootMenu=1;

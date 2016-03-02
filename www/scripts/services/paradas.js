@@ -10,7 +10,7 @@ app.factory('paradasFactory', ["$http", "$q", "md5", "CONFIG",
 				
 				$http({
 					method: 'POST',
-					url: CONFIG.APIURL+'/transporteurbano/paradacercana',
+					url: CONFIG.APIURL+'/paradas/cercanas',
 					data: filtro,
 					headers: {
 						'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
