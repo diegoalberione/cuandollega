@@ -7,7 +7,7 @@
 			<label for="">Calle</label>
 			<input type="text" 
 				ng-model="filtro.nombrecalle" placeholder="Ingrese nombre..." 
-				uib-typeahead="nombre as entidad.nombre for entidad in getCalles($viewValue,1)"
+				uib-typeahead="nombre as entidad.Calle.nombre for entidad in getCalles($viewValue,1)"
 				typeahead-on-select="seleccionCalle($item,1)"
 				typeahead-loading="loading" 
 				typeahead-no-results="noResults" class="form-control"
@@ -24,7 +24,7 @@
 				<label for="">Intersección</label>
 				<input type="text" 
 					ng-model="filtro.nombrecalleint" placeholder="Ingrese nombre..." 
-					uib-typeahead="nombre as entidad.nombre for entidad in getCalles($viewValue,2)"
+					uib-typeahead="nombre as entidad.Calle.nombre for entidad in getCalles($viewValue,2)"
 					typeahead-on-select="seleccionCalle($item,2)"
 					typeahead-loading="loading2" 
 					typeahead-no-results="noResults2" class="form-control"

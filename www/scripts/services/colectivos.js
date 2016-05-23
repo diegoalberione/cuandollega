@@ -8,7 +8,7 @@ app.factory('colectivosFactory', ["$http", "$q", "md5", "CONFIG",
 				var defered = $q.defer();
 				var promise = defered.promise;
 				
-				var url = CONFIG.APIURL+'/seguimientos/cuandollega/'+filtro.parada.id+'/'+filtro.parada.linea_id;
+				var url = CONFIG.APIURL+'/ruteo/cuandollega/'+filtro.parada.id+'/'+filtro.parada.linea_id;
 				
 				$http({
 					method: 'GET',

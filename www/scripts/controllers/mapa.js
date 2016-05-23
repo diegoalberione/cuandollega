@@ -163,7 +163,7 @@ app.controller('MapaController',  [
 		/** PARA TEST del seguimiento **
 		$http({
 			method: 'GET',
-			url: 'http://190.12.101.74/ws/transporteurbano/routing/1227/1352/1',
+			url: 'http://190.12.101.74/ws/transporteurbano/routing/245/250/1',
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
 			}

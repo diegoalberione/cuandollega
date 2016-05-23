@@ -49,13 +49,13 @@ app.controller('BusquedasController',  [
 		
 		$scope.seleccionCalle = function(item, op){
 			if (op == 1){
-				$scope.filtro.codcalle = item.codigo;
-				$scope.filtro.nombrecalle = item.nombre;
+				$scope.filtro.codcalle = item.Calle.codigo;
+				$scope.filtro.nombrecalle = item.Calle.nombre;
 			} else{
-				$scope.filtro.codcalleint = item.codigo;
-				$scope.filtro.nombrecalleint = item.nombre;
-				$scope.filtro.x = parseFloat(item.x);
-				$scope.filtro.y = parseFloat(item.y);
+				$scope.filtro.codcalleint = item.Calle.codigo;
+				$scope.filtro.nombrecalleint = item.Calle.nombre;
+				$scope.filtro.x = parseFloat(item.Calle.x);
+				$scope.filtro.y = parseFloat(item.Calle.y);
 			}
 			filtrosService.set($scope.filtro);
 		};
@@ -66,7 +66,7 @@ app.controller('BusquedasController',  [
 			}
 			return $http.get(url, {})
 			.then(function(response){
-				return response.data;
+				return response.data.calles;
 			});
 		}
 		
